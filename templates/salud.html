@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Conexión · TareasCECyTEM{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+  <h1>Prueba de conexión a la base de datos</h1>
+  {% if ok %}
+    <div class="aviso aviso-ok">Conexión correcta</div>
+    <table class="tabla">
+      <tr><th>Servidor (@@hostname)</th><td>{{ info.servidor }}</td></tr>
+      <tr><th>Versión de MySQL</th><td>{{ info.version }}</td></tr>
+      <tr><th>Base de datos</th><td>{{ info.base }}</td></tr>
+      <tr><th>Cifrado SSL</th><td>{{ info.ssl }}</td></tr>
+      <tr><th>Tareas registradas</th><td>{{ info.total_tareas }}</td></tr>
+    </table>
+    <p class="tenue">Toma captura de esta pantalla como evidencia.</p>
+  {% else %}
+    <div class="aviso aviso-error">No se pudo conectar</div>
+    <pre class="codigo">{{ error }}</pre>
+    <p class="tenue">Revisa las variables DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME y DB_SSL_CA.</p>
+  {% endif %}
+</section>
+{% endblock %}

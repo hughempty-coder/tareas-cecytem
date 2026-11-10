@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block contenido %}
+<section class="tarjeta">
+  <h1>Nueva tarea</h1>
+  <form method="post" action="{{ url_for('agregar') }}" class="formulario">
+    <label>Título
+      <input name="titulo" maxlength="120" required placeholder="Ej. Exportar la BD de XAMPP">
+    </label>
+    <label>Descripción
+      <textarea name="descripcion" rows="2" placeholder="Opcional"></textarea>
+    </label>
+    <div class="fila">
+      <label>Categoría
+        <select name="categoria_id" required>
+          {% for c in categorias %}
+            <option value="{{ c.id }}">{{ c.nombre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Prioridad
+        <select name="prioridad">
+          {% for p in prioridades %}
+            <option {% if p == 'Media' %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Fecha límite
+        <input type="date" name="fecha_limite">
+      </label>
+    </div>
+    <button type="submit" class="boton">Guardar tarea</button>
+  </form>
+</section>
+
+<section class="tarjeta">
+  <h2>Mis tareas <small>{{ pendientes }} pendientes de {{ tareas|length }}</small></h2>
+  {% if tareas %}
+  <table class="tabla">
+    <thead>
+      <tr><th>#</th><th>Tarea</th><th>Categoría</th><th>Prioridad</th><th>Límite</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+      {% for t in tareas %}
+      <tr class="{{ 'hecha' if t.completada }}">
+        <td>{{ t.id }}</td>
+        <td><strong>{{ t.titulo }}</strong>{% if t.descripcion %}<br><span class="tenue">{{ t.descripcion }}</span>{% endif %}</td>
+        <td>{{ t.categoria }}</td>
+        <td><span class="etiqueta p-{{ t.prioridad|lower }}">{{ t.prioridad }}</span></td>
+        <td>{{ t.fecha_limite.strftime('%d/%m/%Y') if t.fecha_limite else '—' }}</td>
+        <td class="acciones">
+          <form method="post" action="{{ url_for('completar', tarea_id=t.id) }}">
+            <button class="boton chico">{{ 'Reabrir' if t.completada else 'Completar' }}</button>
+          </form>
+          <form method="post" action="{{ url_for('eliminar', tarea_id=t.id) }}" onsubmit="return confirm('¿Eliminar la tarea #{{ t.id }}?');">
+            <button class="boton chico peligro">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="tenue">Aún no hay tareas registradas.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Registros · TareasCECyTEM{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+  <h1>Registros en la base de datos</h1>
+  <p class="tenue">
+    Consulta directa a la tabla <code>tareas</code> · Servidor: <strong>{{ info.servidor }}</strong>
+    · Consultado: {{ info.consultado_en.strftime('%d/%m/%Y %H:%M:%S') }}
+  </p>
+
+  <form method="get" class="busqueda">
+    <input name="buscar" value="{{ buscar }}" placeholder="Buscar por título (ej. Prueba INSERT)">
+    <button class="boton chico">Buscar</button>
+    {% if buscar %}<a href="{{ url_for('registros') }}">Quitar filtro</a>{% endif %}
+  </form>
+
+  <p><strong>{{ filas|length }}</strong> fila(s){% if buscar %} que contienen “{{ buscar }}”{% endif %}</p>
+
+  {% if filas %}
+  <table class="tabla">
+    <thead>
+      <tr><th>id</th><th>titulo</th><th>categoria_id</th><th>prioridad</th><th>fecha_limite</th><th>completada</th><th>creada_en</th></tr>
+    </thead>
+    <tbody>
+      {% for f in filas %}
+      <tr>
+        <td>{{ f.id }}</td>
+        <td>{{ f.titulo }}</td>
+        <td>{{ f.categoria_id }}</td>
+        <td>{{ f.prioridad }}</td>
+        <td>{{ f.fecha_limite or 'NULL' }}</td>
+        <td><strong>{{ f.completada }}</strong></td>
+        <td>{{ f.creada_en }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="tenue">Ninguna fila coincide.</p>
+  {% endif %}
+</section>
+{% endblock %}
